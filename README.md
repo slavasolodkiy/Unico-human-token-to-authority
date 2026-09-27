@@ -2,7 +2,7 @@
 ### What Unico's public interfaces reveal about identity, authentication and transaction evidence
 
 **Public-source technical notebook · 27 September 2026**  
-**Author:** Slava Solodkiy · [solodkiy.cv](https://www.solodkiy.cv)  
+**Author:** Slava Solodkiy · [solodkiy.cv](https://www.solodkiy.cv/unico.html)  
 **Scope:** Unico Human Token, Multi Accounts, Smart Re-Authentication / Smart Revalidation, transaction evidence, and a small architectural contrast with World ID 4.0.
 
 > **Knowing who the human is is not the same as knowing what they authorised.**
@@ -60,7 +60,20 @@ The interesting boundary is between **authentication** and **authority**. Public
 | [`evidence-ledger.md`](evidence-ledger.md) | Compact evidence ledger with primary-source links |
 | [`experiments.md`](experiments.md) | Five sandbox tests, ordered by information gain |
 | [`sources.md`](sources.md) | Source list and evidence discipline |
-| [`docs/index.html`](docs/index.html) | Visual GitHub Pages version |
+| [Visual notebook](https://slavasolodkiy.github.io/Unico-human-token-to-authority/) | GitHub Pages version |
+
+## Selected related work
+
+Only the closest context — not a full portfolio.
+
+| Work | Why it is relevant here |
+|---|---|
+| [Digital Identity](https://www.solodkiy.cv/digital-identity.html) | 82-company landscape, reusable identity, proof-of-personhood and prior World ID research |
+| [Compliance & AML](https://www.solodkiy.cv/compliance.html) | KYC/KYB/KYCC, EDD and the regulated evidence context behind identity decisions |
+| [Provisional Authority & Deferred Controls](https://www.solodkiy.cv/Provisional-Authority.html) | Caps, TTL, revocation and hash-chained evidence — adjacent to the mandate layer proposed here |
+| [Sovereign Decision Plane](https://www.solodkiy.cv/Sovereign-Decision-Plane.html) | Separating model inference from deterministic/formal authority controls |
+| [Local AI lab](https://www.solodkiy.cv/tech.html) | Hands-on local inference, evals and formal-method experiments |
+| [Regulated fintech & banking](https://www.solodkiy.cv/fintech.html) | Product and compliance-first banking context where identity becomes consequential |
 
 ## A possible next layer — an Authority Receipt
 
@@ -87,7 +100,7 @@ The important design choice is that `principalRef` should ideally be **pairwise 
 
 ## Reading order
 
-1. Open [`docs/index.html`](docs/index.html) — ~90 seconds.
+1. Open the [visual notebook](https://slavasolodkiy.github.io/Unico-human-token-to-authority/) — ~90 seconds.
 2. Read [`technical-truth-map.md`](technical-truth-map.md) — the canonical v1.
 3. Use [`experiments.md`](experiments.md) only when sandbox access exists.
 
