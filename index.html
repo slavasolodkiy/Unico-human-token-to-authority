@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="From Human Token to Authority — an independent public-source architecture notebook on Unico Human Token, Smart Revalidation, transaction evidence and the missing mandate layer.">
+<meta name="theme-color" content="#efebe2">
+<title>UNICO | FROM HUMAN TOKEN TO AUTHORITY | by Slava Solodkiy.cv</title>
+<style>
+/* ============================================================
+   UNIT HT-01 · field notebook
+   inspired by Teenage Engineering instruments & Nothing industrial design
+   ============================================================ */
+:root{
+  --paper:#efEBE2; --paper:#efebe2; --paper2:#e7e2d6; --card:#f7f4ec;
+  --ink:#171310; --ink2:#4a443a; --faint:#8d8574;
+  --line:#cfc8b6; --line2:#bdb5a1;
+  --acc:#ff4d00;          /* TE orange */
+  --led:#ff3131;          /* Nothing red */
+  --acid:#c8ff00; --cyan:#00e5ff; --mag:#ff00e5;
+  --ok:#1db954; --amber:#e8a100; --violet:#7b4dff; --rose:#e5484d;
+  --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+  --max:1180px; --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font:16px/1.6 -apple-system,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
+  background-image:radial-gradient(circle,rgba(23,19,16,.10) 1px,transparent 1.4px);
+  background-size:22px 22px;
+}
+a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--acc)}
+a:hover{background:var(--acid);border-bottom-color:var(--ink)}
+.wrap{max-width:var(--max);margin:auto;padding:0 22px}
+.mono{font-family:var(--mono)}
+
+/* ── top rail ─────────────────────────────── */
+nav{position:sticky;top:0;z-index:50;background:rgba(239,235,226,.88);backdrop-filter:blur(10px);
+  border-bottom:1.5px solid var(--ink)}
+nav .row{height:54px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font:700 13px var(--mono);letter-spacing:.06em;display:flex;align-items:center;gap:10px}
+.led{width:9px;height:9px;border-radius:50%;background:var(--led);box-shadow:0 0 6px var(--led);
+}
+@keyframes blink{50%{opacity:.15}}
+.navlinks{display:flex;gap:20px;font:600 11.5px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.navlinks a{border-bottom:none;color:var(--ink2)}
+.navlinks a:hover{background:var(--acid);color:var(--ink)}
+
+/* ── hero ─────────────────────────────── */
+header{padding:84px 0 56px;border-bottom:1.5px solid var(--ink)}
+.eyebrow{display:flex;align-items:center;gap:12px;font:700 11px var(--mono);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink2)}
+.eyebrow::before{content:"";width:34px;height:1.5px;background:var(--acc)}
+h1{font-family:var(--mono);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(38px,7.4vw,86px);line-height:.98;margin:22px 0 22px;position:relative;max-width:1000px}
+.glitch{position:relative;display:inline-block}
+.dek{font-size:clamp(17px,2.1vw,23px);max-width:840px;color:var(--ink2)}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.pill{font:600 11.5px var(--mono);letter-spacing:.05em;border:1.5px solid var(--ink);
+  background:var(--card);padding:7px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:8px}
+.pill.gh:hover{background:var(--acid)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+
+/* ── generic section ─────────────────────────────── */
+section{padding:60px 0;border-bottom:1.5px solid var(--ink)}
+h2{font-family:var(--mono);font-weight:800;letter-spacing:-.02em;
+  font-size:clamp(24px,3.6vw,40px);margin:0 0 10px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h2 .idx{font-size:12px;letter-spacing:.18em;color:var(--acc);font-weight:700}
+.lead{color:var(--ink2);max-width:840px;margin:0 0 32px}
+
+/* ── chain module ─────────────────────────────── */
+.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.node{position:relative;background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);
+  padding:18px 16px 16px;min-height:172px;box-shadow:3px 3px 0 rgba(23,19,16,.9)}
+.node .nd{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.node .num{font:700 10px var(--mono);letter-spacing:.16em;color:var(--faint)}
+.node h3{font-family:var(--mono);font-size:17px;margin:10px 0 6px;letter-spacing:-.01em}
+.node p{font-size:12.5px;color:var(--ink2);line-height:1.45}
+.node.gap{border:1.5px dashed var(--acc);background:#fdf3ea;box-shadow:3px 3px 0 rgba(255,77,0,.55)}
+.node.gap .nd{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.node.gap h3{color:var(--acc)}
+.breakline{margin:22px 0 0;padding:20px 22px;border:1.5px solid var(--ink);border-radius:var(--r);
+  background:linear-gradient(90deg,rgba(200,255,0,.35),rgba(0,229,255,.14));
+  font-family:var(--mono);font-size:clamp(16px,2.3vw,22px);font-weight:700;letter-spacing:-.02em}
+.breakline small{display:block;font:400 12.5px/1.5 var(--mono);color:var(--ink2);margin-top:8px;letter-spacing:0}
+
+/* ── research status rail ─────────────────────────────── */
+.statusrail{border-bottom:1.5px solid var(--ink);background:var(--ink);color:var(--paper);padding:10px 0}
+.statusrail .inner{max-width:var(--max);margin:auto;padding:0 22px;display:flex;flex-wrap:wrap;gap:10px 22px;
+  font:700 11px var(--mono);letter-spacing:.10em;text-transform:uppercase}
+.statusrail .inner span::before{content:"●";color:var(--acc);margin-right:8px}
+
+/* ── truth map cards ─────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{position:relative;background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);
+  padding:20px;transition:transform .12s ease}
+.card:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--ink);border-radius:999px;
+  padding:4px 10px;font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.tag .td{width:7px;height:7px;border-radius:50%}
+.t-conf{background:var(--card)} .t-conf .td{background:var(--ok);box-shadow:0 0 5px var(--ok)}
+.t-unk{background:#fdf3ea} .t-unk .td{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+.t-like{background:#f2edff} .t-like .td{background:var(--violet)}
+.t-vend{background:#f6f0ff} .t-vend .td{background:var(--violet)}
+.t-dont{background:#fdecec} .t-dont .td{background:var(--rose)}
+.card h3{font-family:var(--mono);font-size:16.5px;margin:0 0 7px;letter-spacing:-.01em}
+.card p{color:var(--ink2);font-size:13.5px;margin:0}
+code{font-family:var(--mono);font-size:12px;background:rgba(23,19,16,.07);padding:1px 5px;border-radius:4px}
+
+/* ── hypothesis scope diagram ─────────────────────────────── */
+.scope{display:grid;grid-template-columns:1fr 64px 1fr;gap:14px;align-items:stretch;margin-top:10px}
+.scopebox{background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);padding:22px}
+.scopebox.center{border:1.5px dashed var(--acc);background:#fdf3ea;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.scope .arrow{display:flex;align-items:center;justify-content:center;font:800 26px var(--mono);color:var(--acc)}
+.scope h3{font-family:var(--mono);font-size:16px;margin:0 0 8px}
+.scope p{margin:0;font-size:13.5px;color:var(--ink2)}
+.caveat{margin-top:14px;font:600 12.5px var(--mono);color:var(--acc)}
+
+/* ── split ─────────────────────────────── */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.big{background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);padding:24px}
+.big h3{font-family:var(--mono);font-size:18px;margin:0 0 12px}
+.big ul{margin:0;padding-left:18px;color:var(--ink2);font-size:13.5px}
+.big li{margin:8px 0}
+
+/* ── questions ─────────────────────────────── */
+.qs{counter-reset:q;display:grid;gap:10px}
+.q{counter-increment:q;display:grid;grid-template-columns:58px 1fr;gap:14px;background:var(--card);
+  border:1.5px solid var(--ink);border-radius:var(--r);padding:16px 18px}
+.q::before{content:"Q0" counter(q);display:flex;align-items:center;justify-content:center;
+  font:800 13px var(--mono);color:var(--acc);border:1.5px solid var(--ink);border-radius:10px;background:var(--paper2);height:44px}
+.q p{margin:0;color:var(--ink2);font-size:14px;align-self:center}
+.q b{color:var(--ink)}
+
+/* ── experiments ─────────────────────────────── */
+.exps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.exp{background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);padding:16px}
+.exp .x{font:800 11px var(--mono);color:var(--acc);letter-spacing:.1em}
+.exp h3{font-family:var(--mono);font-size:14.5px;margin:8px 0 6px}
+.exp p{font-size:12.5px;color:var(--ink2);margin:0}
+
+/* ── related work ─────────────────────────────── */
+.work{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.wk{background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);padding:18px;display:block;border-bottom:1.5px solid var(--ink)}
+.wk:hover{background:var(--acid);box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
+.wk .wn{font:700 10px var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.wk h3{font-family:var(--mono);font-size:14.5px;margin:8px 0 6px}
+.wk p{font-size:12.5px;color:var(--ink2);margin:0}
+.wk:hover p{color:var(--ink)}
+
+/* ── contribute ─────────────────────────────── */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.col{background:var(--card);border:1.5px solid var(--ink);border-radius:var(--r);padding:20px}
+.col .n{font:800 11px var(--mono);color:var(--acc);letter-spacing:.12em}
+.col h3{font-family:var(--mono);font-size:15.5px;margin:8px 0 7px}
+.col p{font-size:13px;color:var(--ink2);margin:0}
+
+/* ── receipt screen ─────────────────────────────── */
+.screen{background:#101418;color:#c9e8d2;border:1.5px solid var(--ink);border-radius:var(--r);
+  padding:20px;overflow:auto;font:12.5px/1.65 var(--mono);position:relative;margin-top:18px}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:var(--r);
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
+.screen .cm{color:#5c6f66}.screen .kw{color:#8fd3ff}.screen .st{color:#a9e6b8}
+.screen .hyp{color:var(--acid)}
+.screen .obs{color:#e0b56a}
+.crt{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 7px var(--ok);margin-right:8px}
+
+/* ── cta / footer ─────────────────────────────── */
+.cta{border:1.5px solid var(--ink);border-radius:var(--r);background:var(--card);padding:26px;
+  box-shadow:5px 5px 0 rgba(23,19,16,.9)}
+.cta h3{font-family:var(--mono);font-size:clamp(20px,2.6vw,28px);margin:0 0 10px;letter-spacing:-.02em}
+.cta p{color:var(--ink2);max-width:840px;font-size:14.5px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.btn{font:700 12px var(--mono);border:1.5px solid var(--ink);border-radius:9px;padding:9px 13px;
+  background:var(--paper2);color:var(--ink);display:inline-flex;align-items:center;gap:7px;border-bottom:1.5px solid var(--ink)}
+.btn:hover{background:var(--acid);text-decoration:none;box-shadow:3px 3px 0 var(--ink);transform:translate(-1px,-1px)}
+footer{padding:40px 0 72px;color:var(--faint);font-size:12.5px}
+footer .legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+footer .legend .tag{margin-bottom:0}
+.footgrid{display:grid;grid-template-columns:2fr 1fr;gap:24px}
+footer p{margin:0 0 8px;max-width:880px}
+.tiny{font-size:11.5px}
+
+@media(max-width:920px){
+  .chain{grid-template-columns:1fr 1fr}
+  .node.gap{grid-column:1/-1}
+  .split{grid-template-columns:1fr}
+  .scope{grid-template-columns:1fr}
+  .scope .arrow{transform:rotate(90deg);padding:8px 0}
+  .navlinks{display:none}
+  .footgrid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  header{padding-top:64px}
+  .grid,.chain{grid-template-columns:1fr}
+  .node.gap{grid-column:auto}
+  .q{grid-template-columns:46px 1fr}
+  .q::before{height:38px;font-size:11px}
+  .wrap{padding:0 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .led{animation:none}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap row">
+  <div class="brand"><span class="led"></span>HT→AUTH · UNICO · v1.0</div>
+  <div class="navlinks">
+    <a href="#truth">Truth map</a><a href="#hypothesis">Hypothesis</a><a href="#questions">Questions</a>
+    <a href="#experiments">Experiments</a><a href="#work">Related work</a><a href="#contribute">Where I can help</a>
+  </div>
+</div></nav>
+
+<header><div class="wrap">
+  <div class="eyebrow">Independent public-source architecture 'homework' · 27 Sep 2026</div>
+  <h1>FROM <span class="glitch" data-text="HUMAN TOKEN">HUMAN TOKEN</span><br>TO AUTHORITY</h1>
+  <p class="dek">What <b>Unico</b>'s public interfaces reveal about identity, authentication and transaction evidence — and <i>where authentication stops before authority begins</i>.</p>
+  <div class="hero-meta">
+    <span class="pill"><span class="dot"></span>Public docs only</span>
+    <span class="pill"><span class="dot"></span>No live system probed</span>
+    <span class="pill"><span class="dot"></span>No credentials used</span>
+    <span class="pill"><span class="dot"></span>Unknown ≠ absent</span>
+    <span class="pill">Independent · not affiliated with Unico</span>
+    <a class="pill gh" href="https://github.com/slavasolodkiy/Unico-human-token-to-authority">⌥ github.com/slavasolodkiy/Unico-human-token-to-authority</a>
+  </div>
+</div></header>
+
+<div class="statusrail"><div class="inner">
+  <span>Public docs only</span><span>No live system probed</span><span>5 unresolved architecture questions</span><span>5 benign tests to resolve them</span>
+</div></div>
+
+<section><div class="wrap">
+  <h2><span class="idx">SEC·01</span>The chain — and the missing layer</h2>
+  <p class="lead">Recognition and authentication answer increasingly well <em>who the actor is</em>
+  and <em>whether the expected human is present</em>. A regulated transaction eventually needs one
+  more answer: <em>were they allowed to do this exact thing?</em></p>
+  <div class="chain">
+    <div class="node"><span class="nd"></span><div class="num">MODULE 01</div><h3>Identity</h3><p>Human Token<br><code>face → personId</code></p></div>
+    <div class="node"><span class="nd"></span><div class="num">MODULE 02</div><h3>Authentication</h3><p>Smart Revalidation<br>reference + context → decision</p></div>
+    <div class="node gap"><span class="nd"></span><div class="num">MODULE 03 · OPEN LAYER</div><h3>Authority</h3><p>mandate · scope · budget · expiry · revocation</p></div>
+    <div class="node"><span class="nd"></span><div class="num">MODULE 04</div><h3>Transaction</h3><p>the exact economic action that was approved</p></div>
+    <div class="node"><span class="nd"></span><div class="num">MODULE 05</div><h3>Evidence</h3><p>what a bank, auditor or court can verify later</p></div>
+  </div>
+  <div class="breakline">KNOWING WHO THE HUMAN IS ≠ KNOWING WHAT THEY AUTHORISED.
+    <small>That distinction becomes more important — not less — when software or an AI agent acts for them.</small>
+  </div>
+</div></section>
+
+<section id="truth"><div class="wrap">
+  <h2><span class="idx">SEC·02</span>Technical Truth Map v1</h2>
+  <p class="lead">The shortest version of the research. <i>“Confirmed” means supported by reviewed
+  public material — not production-tested</i>.</p>
+  <div class="grid">
+    <div class="card"><span class="tag t-conf"><span class="td"></span>Confirmed</span>
+      <h3>Human Token is recognition</h3>
+      <p>A selfie resolves to <code>idFace.personId</code>. The docs say identity is the output,
+      not the input. Closer to “who is this recurring face?” than to document-first KYC.</p></div>
+    <div class="card"><span class="tag t-unk"><span class="td"></span>Unknown</span>
+      <h3><code>personId</code> scope is the big question</h3>
+      <p>Global? tenant-scoped? API-key scoped? Or a customer-facing alias of a global internal
+      identity? Public docs do not say — and this single answer changes the privacy model of
+      the whole product.</p></div>
+    <div class="card"><span class="tag t-conf"><span class="td"></span>Confirmed</span>
+      <h3>Multi Accounts asks a different question</h3>
+      <p>Segmented 1:N search inside an operator's base, keyed by <code>clientReference</code>:
+      “is this face already attached to another account in my segment?”</p></div>
+    <div class="card"><span class="tag t-conf"><span class="td"></span>Confirmed</span>
+      <h3>Documented Smart Revalidation references are not <code>personId</code></h3>
+      <p>The documented reference is a prior process ID or an image. Recognition identity,
+      authentication reference and authentication event are deliberately separate objects.</p></div>
+    <div class="card"><span class="tag t-like"><span class="td"></span>Likely</span>
+      <h3>Presence is a separate assurance property</h3>
+      <p>Raw Base64 can enter Human Token, while Unico documents that liveness cannot be invoked
+      through a raw-image API alone. Safest model: recognition first; live presence depends on
+      the capture path.</p></div>
+    <div class="card"><span class="tag t-conf"><span class="td"></span>Confirmed</span>
+      <h3>IDPay is the concrete transaction-binding exception</h3>
+      <p>General Smart Revalidation has use-case/context semantics. IDPay explicitly binds
+      identity to order, value and card context — and adds an evidence/chargeback workflow.</p></div>
+    <div class="card"><span class="tag t-vend"><span class="td"></span>Vendor claim</span>
+      <h3>“Cryptographic chain of custody” needs a visible artifact</h3>
+      <p>Public docs expose process records, selfie and Evidence Set PDF. They do not publicly
+      document an RP-verifiable signed decision receipt, JWKS, signed webhook, manifest or
+      trusted timestamp.</p></div>
+    <div class="card"><span class="tag t-dont"><span class="td"></span>Do not repeat</span>
+      <h3>World is not “proof with no identifier”</h3>
+      <p>World ID 4.0 exposes scoped identifiers — a nullifier and an optional per-RP session ID.
+      The real contrast is scoping/unlinkability, not identifier vs no identifier.</p></div>
+  </div>
+</div></section>
+
+<section id="hypothesis"><div class="wrap">
+  <h2><span class="idx">SEC·03</span>The <code>personId</code> hypothesis</h2>
+  <p class="lead">One model currently fits the public evidence best — but remains an inference
+  until Unico answers or a two-tenant experiment distinguishes it.</p>
+  <div class="scope">
+    <div class="scopebox"><span class="tag t-like"><span class="td"></span>Observed signals</span>
+      <h3>Unico-wide internal machinery exists</h3>
+      <p>Cross-client document reuse, “global network history”, internal-ID clues, and Trully's
+      network-wide face identifier show that Unico can maintain cross-client identity/fraud
+      state in parts of its stack.</p></div>
+    <div class="arrow">→</div>
+    <div class="scopebox center"><span class="tag t-unk"><span class="td"></span>Best-fit inference</span>
+      <h3>UNKNOWN boundary<br><span style="color:var(--acc)">best-fit:</span> internal subject + scoped alias?</h3>
+      <p style="margin-top:6px">A useful model to test — not an implementation claim.</p></div>
+  </div>
+  <p class="caveat">⚠ HYPOTHESIS ONLY. Public evidence shows network-level machinery, but does not establish how Human Token exposes its namespace to customers.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2><span class="idx">SEC·04</span>Unico and World: different trust primitives</h2>
+  <p class="lead">A small architectural contrast, not a ranking.</p>
+  <div class="split">
+    <div class="big"><h3>◉ Unico — provider-resolved recognisability</h3>
+      <ul><li>Face and provider-held state resolve the recurring human.</li>
+      <li>Strong fit for fraud, account continuity and adaptive re-authentication.</li>
+      <li>Provider can observe the reuse event.</li>
+      <li>Critical open question: how the RP-visible <code>personId</code> is scoped.</li></ul></div>
+    <div class="big"><h3>◎ World — scoped cryptographic presentation</h3>
+      <ul><li>User-held credentials presented through proofs.</li>
+      <li>RP/action-scoped identifiers and optional per-RP sessions.</li>
+      <li>Designed to reduce cross-RP linkability.</li>
+      <li>Still no general mandate object for AI-agent authority.</li></ul></div>
+  </div>
+</div></section>
+
+<section id="questions"><div class="wrap">
+  <h2><span class="idx">SEC·05</span>Five questions I would ask</h2>
+  <p class="lead">Each answer changes the architecture model. <i>None is meant as a gotcha</i>.</p>
+  <div class="qs">
+    <div class="q"><p><b><code>personId</code> scope.</b> For the same human, would two different Unico
+    customers receive the same <code>personId</code>, pairwise identifiers, or does Unico maintain a
+    global identity internally and expose customer-specific aliases?</p></div>
+    <div class="q"><p><b>One graph or several?</b> Are Human Token, Multi Accounts and network-history
+    fraud signals ultimately resolving against the same underlying biometric identity graph, or
+    deliberately separate namespaces/stores?</p></div>
+    <div class="q"><p><b>Recognition vs presence.</b> Since raw Base64 can enter Human Token on a path where the documented liveness capability is not available, should <code>personId</code> be understood primarily as face recognition, while live-presence assurance is a separate property of the capture path?</p></div>
+    <div class="q"><p><b>Transaction evidence.</b> What exactly is the technical artifact behind
+    “cryptographic chain of custody”? Can an RP verify a signed object binding authentication
+    event + transaction parameters + time + policy/version, or is that provenance currently
+    maintained inside Unico?</p></div>
+    <div class="q"><p><b>The next layer.</b> You already solve “who is this human?” and increasingly
+    “is this the same human acting now?”. How are you thinking about proving that this human —
+    or an AI agent acting for them — had authority for this exact action under a specific mandate?</p></div>
+  </div>
+</div></section>
+
+<section id="experiments"><div class="wrap">
+  <h2><span class="idx">SEC·06</span>Five sandbox tests</h2>
+  <p class="lead">Not attack testing — small, consented experiments ordered by information gain.</p>
+  <div class="exps">
+    <div class="exp"><div class="x">X1 · STABILITY</div><h3>Repeated + cross-channel capture</h3>
+      <p>Same person, different days/devices; API vs SDK/Web. Tests stability, channel consistency and presence semantics.</p></div>
+    <div class="exp"><div class="x">X2 · NAMESPACE</div><h3>Two keys / branches</h3>
+      <p>Same tenant, same human, different API keys/segments/branches. Tests the inner namespace boundary.</p></div>
+    <div class="exp"><div class="x">X3 · HIGHEST VALUE</div><h3>Two tenants</h3>
+      <p>Same human under an explicitly permitted two-tenant test. Distinguishes global RP-visible ID from scoped aliasing.</p></div>
+    <div class="exp"><div class="x">X4 · CROSSING</div><h3>Human Token ↔ Multi Accounts</h3>
+      <p>Run both in both orders to learn whether product state crosses the boundary.</p></div>
+    <div class="exp"><div class="x">X5 · FORENSICS</div><h3>Revalidation + PDF forensics</h3>
+      <p>Compare use cases and silent/facial paths; inspect Evidence Set for signatures, timestamps, manifests and bindings.</p></div>
+  </div>
+</div></section>
+
+<section id="work"><div class="wrap">
+  <h2><span class="idx">SEC·07</span>related work</h2>
+  <p class="lead">the closest evidence of domain depth, regulated-finance context and hands-on work around the authority layer.</p>
+  <div class="work">
+    <a class="wk" href="https://www.solodkiy.cv/digital-identity.html"><span class="wn">IDENTITY · DOMAIN</span>
+      <h3>Digital Identity</h3>
+      <p>landscape, reusable identity, proof-of-personhood and earlier World ID work — the direct domain behind this notebook.</p></a>
+    <a class="wk" href="https://www.solodkiy.cv/compliance.html"><span class="wn">REGULATED · FINANCE</span>
+      <h3>Compliance &amp; AML</h3>
+      <p>KYC/KYB/KYCC, EDD, OSINT and high-risk financial services: why identity evidence has to survive audit, not only onboarding.</p></a>
+    <a class="wk" href="https://www.solodkiy.cv/Provisional-Authority.html"><span class="wn">AUTHORITY · CASE 01</span>
+      <h3>Provisional Authority &amp; Deferred Controls</h3>
+      <p>Authority over time: caps, TTL, revocation and hash-chained evidence — adjacent to the mandate layer proposed here.</p></a>
+    <a class="wk" href="https://www.solodkiy.cv/Sovereign-Decision-Plane.html"><span class="wn">AUTHORITY · CASE 02</span>
+      <h3>Sovereign Decision Plane</h3>
+      <p>Models can propose; deterministic and formal controls decide. A practical separation of inference from authority.</p></a>
+    <a class="wk" href="https://www.solodkiy.cv/tech.html"><span class="wn">LAB · BUILD</span>
+      <h3>Local AI lab</h3>
+      <p>Hands-on local inference, evals and formal-method experiments across a small multi-node lab — the execution layer behind this research style.</p></a>
+    <a class="wk" href="https://www.solodkiy.cv/fintech.html"><span class="wn">PRODUCT · CONTEXT</span>
+      <h3>Regulated fintech &amp; banking</h3>
+      <p>Product, compliance-first banking and cross-border financial infrastructure — the operating context in which identity becomes consequential.</p></a>
+  </div>
+</div></section>
+
+<section id="contribute"><div class="wrap">
+  <h2><span class="idx">SEC·08</span>Where I think I could be useful</h2>
+  <p class="lead">My interest <i>is not another biometric matcher</i>. It is the layer that <b>turns identity
+  and authentication into accountable authority</b> inside regulated financial systems.</p>
+  <div class="cols">
+    <div class="col"><div class="n">AREA·01</div><h3>Authority / mandate model</h3>
+      <p>A machine-readable object linking principal → human/agent delegate → scope → budget →
+      validity → revocation, rather than treating successful authentication as permission.</p></div>
+    <div class="col"><div class="n">AREA·02</div><h3>Decision receipt</h3>
+      <p>A durable, signed receipt binding identity evidence, authentication event, mandate and
+      transaction digest — independently verifiable later by a regulated third party.</p></div>
+    <div class="col"><div class="n">AREA·03</div><h3>Privacy-preserving interoperability</h3>
+      <p>Combine Unico-style recognisability and fraud utility with pairwise/scoped identifiers,
+      so reuse does not automatically create a cross-RP biometric join key.</p></div>
+    <div class="col"><div class="n">AREA·04</div><h3>Experiment harness</h3>
+      <p>A small reproducible sandbox suite that converts architecture UNKNOWNs into measured
+      results instead of relying on product prose.</p></div>
+  </div>
+
+  <div class="screen"><span class="crt"></span><span class="cm">// AUTHORITY RECEIPT — original design sketch, not a Unico feature claim.</span>
+<span class="cm">// Smallest object a regulated relying party should retain when a human — or an AI</span>
+<span class="cm">// agent acting for them — authorises a specific action.</span>
+<span class="cm">//</span>
+<span class="cm">// Field mapping to Unico's documented API surface:</span>
+<span class="cm">//   authenticationEventRef → authenticationId        (OBSERVED)</span>
+<span class="cm">//   identityEvidenceRef    → processId / evidenceset (OBSERVED)</span>
+<span class="cm">//   principalRef "pairwise"→ open question Q1 (personId scope: UNKNOWN)</span>
+{
+  <span class="kw">"principalRef"</span>:           <span class="st">"pairwise:..."</span>,   <span class="cm">// pairwise, not global — see Q1</span>
+  <span class="kw">"identityEvidenceRef"</span>:    <span class="st">"idp-process:..."</span>,
+  <span class="kw">"authenticationEventRef"</span>: <span class="st">"auth:..."</span>,
+  <span class="hyp">"mandateRef"</span>:           <span class="st">"mandate:..."</span>,  <span class="cm">// MISSING LAYER</span>
+  <span class="hyp">"transactionDigest"</span>:    <span class="st">"sha256:..."</span>,   <span class="cm">// binds the exact action</span>
+  <span class="kw">"decision"</span>:               <span class="st">"ALLOW"</span>,
+  <span class="hyp">"policyVersion"</span>:        <span class="st">"policy:..."</span>,   <span class="cm">// Unico recipes are "named and versioned" internally</span>
+  <span class="kw">"occurredAt"</span>:             <span class="st">"2026-09-27T16:00:00Z"</span>,
+  <span class="hyp">"evidenceDigest"</span>:       <span class="st">"sha256:..."</span>,
+  <span class="hyp">"issuerSignature"</span>:      <span class="st">"..."</span>           <span class="cm">// the part that makes it provable later</span>
+}</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="cta">
+    <h3>What this v1 is — and is not</h3>
+    <p><b>v1 is complete as a public-evidence sprint.</b> The open questions are part of the result,
+    <i>not a failure of it</i>. A later v1.1/v2 would be a sandbox-validated edition after X1–X5.</p>
+    <div class="links">
+      <a class="btn" href="https://github.com/slavasolodkiy/Unico-human-token-to-authority/blob/main/technical-truth-map.md">▸ Technical Truth Map</a>
+      <a class="btn" href="https://github.com/slavasolodkiy/Unico-human-token-to-authority/blob/main/evidence-ledger.md">▸ Evidence ledger</a>
+      <a class="btn" href="https://github.com/slavasolodkiy/Unico-human-token-to-authority/blob/main/experiments.md">▸ Sandbox tests</a>
+      <a class="btn" href="https://github.com/slavasolodkiy/Unico-human-token-to-authority/blob/main/sources.md">▸ Sources</a>
+      <a class="btn" href="https://www.solodkiy.cv">▸ solodkiy.cv</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="legend">
+    <span class="tag t-conf"><span class="td"></span>Confirmed</span>
+    <span class="tag t-like"><span class="td"></span>Likely</span>
+    <span class="tag t-unk"><span class="td"></span>Unknown</span>
+    <span class="tag t-vend"><span class="td"></span>Vendor claim</span>
+    <span class="tag t-dont"><span class="td"></span>Do not repeat</span>
+  </div>
+  <div class="footgrid">
+    <div><b>FROM HUMAN TOKEN TO AUTHORITY</b>
+      <p class="tiny">Independent notes based on public documentation as of 27 September 2026.
+      184 Unico developer-portal pages, 40 privacy-centre documents, official sample repos and
+      release notes; World ID docs, spec and contracts for contrast. <b>No live systems probed, no
+      credentials used</b>. Absence from public documentation is not evidence of non-existence.</p></div>
+    <div class="tiny">From: <a href="https://www.solodkiy.cv/">Slava Solodkiy</a><br>
+      World ID included only as an architectural contrast, not a ranking.</div>
+  </div>
+</div></footer>
+
+</body>
+</html>
